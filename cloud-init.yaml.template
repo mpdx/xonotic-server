@@ -34,5 +34,4 @@ runcmd:
   - git clone ${GIT_REPO_URL} /root/xonotic-server
   - cd /root/xonotic-server && git lfs pull
   - cp /root/xonotic.env /root/xonotic-server/.env
-
   - cd /root/xonotic-server && docker-compose up -d
