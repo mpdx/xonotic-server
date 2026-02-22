@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euoa pipefail
 
+# Save bot-provided value before .env overwrites it
+CLI_AUTO_DESTROY_HOURS="${AUTO_DESTROY_HOURS:-}"
+
 if [ ! -f .env ]; then
     echo "Error: .env file not found. Copy .env.example and configure it."
     exit 1
@@ -21,7 +24,7 @@ HETZNER_SERVER_TYPE="${HETZNER_SERVER_TYPE:-cx23}"
 HETZNER_LOCATION="${HETZNER_LOCATION:-nbg1}"
 HETZNER_IMAGE="${HETZNER_IMAGE:-debian-12}"
 DNS_TTL="${DNS_TTL:-120}"
-AUTO_DESTROY_HOURS="${AUTO_DESTROY_HOURS:-5}"
+AUTO_DESTROY_HOURS="${CLI_AUTO_DESTROY_HOURS:-${AUTO_DESTROY_HOURS:-5}}"
 WEBHOOK_CALLBACK_URL="${WEBHOOK_CALLBACK_URL:-}"
 WEBHOOK_SECRET="${WEBHOOK_SECRET:-}"
 
