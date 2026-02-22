@@ -15,11 +15,11 @@ packages:
 write_files:
   - path: /root/xonotic.env
     content: |
-      SERVER_HOSTNAME=${SERVER_HOSTNAME}
-      RCON_PASSWORD=${RCON_PASSWORD}
+      SERVER_HOSTNAME="${SERVER_HOSTNAME}"
+      RCON_PASSWORD="${RCON_PASSWORD}"
       MAX_PLAYERS=${MAX_PLAYERS}
       GAME_PORT=${GAME_PORT}
-      MAP_SERVER_URL=${MAP_SERVER_URL}
+      MAP_SERVER_URL="${MAP_SERVER_URL}"
 
 runcmd:
   - ufw allow 22/tcp

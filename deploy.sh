@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -euoa pipefail
 
 # Load environment variables
 if [ ! -f .env ]; then
@@ -31,6 +31,8 @@ SERVER_NAME="xonotic-$(date +%s)"
 echo "Generating cloud-init configuration..."
 envsubst '${GIT_REPO_URL} ${SERVER_HOSTNAME} ${RCON_PASSWORD} ${MAX_PLAYERS} ${GAME_PORT} ${MAP_SERVER_URL}' \
     < cloud-init.yaml.template > cloud-init.yaml
+
+exit
 
 echo "Creating Hetzner VPS..."
 hcloud server create \
