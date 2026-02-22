@@ -14,4 +14,4 @@ g_maxplayers ${MAX_PLAYERS}
 EOF
 
 # Start Xonotic dedicated server
-exec /opt/xonotic/xonotic-linux-dedicated -dedicated
+exec /opt/xonotic/xonotic-linux64-dedicated -dedicated
