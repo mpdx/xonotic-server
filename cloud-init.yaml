@@ -8,6 +8,7 @@ packages:
   - docker.io
   - docker-compose
   - git
+  - git-lfs
   - curl
   - ufw
 
@@ -20,8 +21,8 @@ runcmd:
   - systemctl enable docker
   - systemctl start docker
 
+  - git lfs install
   - git clone https://github.com/mpdx/xonotic-server.git /root/xonotic-server
-  - cd /root/xonotic-server
+  - cd /root/xonotic-server && git lfs pull
 
-  - docker-compose up -d
-  - docker-compose ps
+  - cd /root/xonotic-server && docker-compose up -d
