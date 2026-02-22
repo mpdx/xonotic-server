@@ -5,8 +5,9 @@ Xonotic game server with Hetzner cloud-init + Docker Compose.
 ## Quick Start
 
 ```bash
-cp .env.example .env && vim .env
-chmod +x deploy.sh && ./deploy.sh
+cp .env.example .env 
+# edit .env according to your needs
+bash deploy.sh
 ```
 
 Check logs:
