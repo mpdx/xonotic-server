@@ -8,7 +8,7 @@ fi
 
 source .env
 
-required_vars=(HETZNER_SSH_KEY CLOUDFLARE_API_TOKEN CLOUDFLARE_ZONE_ID DOMAIN GIT_REPO_URL)
+required_vars=(HETZNER_SSH_KEY HETZNER_TOKEN CLOUDFLARE_API_TOKEN CLOUDFLARE_ZONE_ID DOMAIN GIT_REPO_URL)
 for var in "${required_vars[@]}"; do
     if [ -z "${!var:-}" ]; then
         echo "Error: $var is not set in .env"
@@ -21,11 +21,14 @@ HETZNER_SERVER_TYPE="${HETZNER_SERVER_TYPE:-cx23}"
 HETZNER_LOCATION="${HETZNER_LOCATION:-nbg1}"
 HETZNER_IMAGE="${HETZNER_IMAGE:-debian-12}"
 DNS_TTL="${DNS_TTL:-120}"
+AUTO_DESTROY_HOURS="${AUTO_DESTROY_HOURS:-5}"
+WEBHOOK_CALLBACK_URL="${WEBHOOK_CALLBACK_URL:-}"
+WEBHOOK_SECRET="${WEBHOOK_SECRET:-}"
 
 SERVER_NAME="xonotic-$(date +%s)"
 
 echo "Generating cloud-init configuration..."
-envsubst '${GIT_REPO_URL} ${SERVER_HOSTNAME} ${RCON_PASSWORD} ${MAX_PLAYERS} ${GAME_PORT} ${MAP_SERVER_URL}' \
+envsubst '${GIT_REPO_URL} ${SERVER_HOSTNAME} ${RCON_PASSWORD} ${GAME_PORT} ${MAP_SERVER_URL} ${HETZNER_TOKEN} ${AUTO_DESTROY_HOURS} ${WEBHOOK_CALLBACK_URL} ${WEBHOOK_SECRET} ${SERVER_NAME}' \
     < cloud-init.yaml.template > cloud-init.yaml
 
 echo "Creating Hetzner VPS..."

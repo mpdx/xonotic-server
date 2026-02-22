@@ -1,3 +1,6 @@
 .env
 .DS_Store
 cloud-init.yaml
+discord-bot/.env
+discord-bot/server_state.json
+discord-bot/__pycache__/

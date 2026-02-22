@@ -11,6 +11,7 @@ packages:
   - git-lfs
   - curl
   - ufw
+  - python3-pip
 
 write_files:
   - path: /root/xonotic.env
@@ -19,6 +20,40 @@ write_files:
       RCON_PASSWORD="${RCON_PASSWORD}"
       GAME_PORT=${GAME_PORT}
       MAP_SERVER_URL="${MAP_SERVER_URL}"
+
+  - path: /etc/systemd/system/self-destruct.service
+    content: |
+      [Unit]
+      Description=Delete this server
+      [Service]
+      Type=oneshot
+      Environment="HCLOUD_TOKEN=${HETZNER_TOKEN}"
+      ExecStart=/usr/local/bin/hcloud server delete ${SERVER_NAME} --poll
+
+  - path: /etc/systemd/system/self-destruct.timer
+    content: |
+      [Unit]
+      Description=Self-destruct after ${AUTO_DESTROY_HOURS} hours
+      [Timer]
+      OnBootSec=${AUTO_DESTROY_HOURS}h
+      [Install]
+      WantedBy=timers.target
+
+  - path: /usr/local/bin/notify-ready.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      # Wait for UDP port 26000 to be listening
+      for i in {1..60}; do
+        if ss -uln | grep -q ':26000 '; then
+          curl -X POST "${WEBHOOK_CALLBACK_URL}/ready" \
+            -H "Content-Type: application/json" \
+            -d '{"token":"${WEBHOOK_SECRET}","server_name":"${SERVER_NAME}"}'
+          exit 0
+        fi
+        sleep 5
+      done
+      echo "Timeout waiting for game server"
 
 runcmd:
   - ufw allow 22/tcp
@@ -29,8 +64,15 @@ runcmd:
   - systemctl enable docker
   - systemctl start docker
 
+  - curl -fsSL https://github.com/hetznercloud/cli/releases/latest/download/hcloud-linux-amd64.tar.gz | tar -xz -C /usr/local/bin hcloud
+
+  - systemctl daemon-reload
+  - systemctl enable --now self-destruct.timer
+
   - git lfs install
   - git clone ${GIT_REPO_URL} /root/xonotic-server
   - cd /root/xonotic-server && git lfs pull
   - mv /root/xonotic.env /root/xonotic-server/.env
   - cd /root/xonotic-server && docker-compose up -d
+
+  - nohup /usr/local/bin/notify-ready.sh &
