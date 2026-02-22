@@ -12,6 +12,15 @@ packages:
   - curl
   - ufw
 
+write_files:
+  - path: /root/xonotic.env
+    content: |
+      SERVER_HOSTNAME=${SERVER_HOSTNAME}
+      RCON_PASSWORD=${RCON_PASSWORD}
+      MAX_PLAYERS=${MAX_PLAYERS}
+      GAME_PORT=${GAME_PORT}
+      MAP_SERVER_URL=${MAP_SERVER_URL}
+
 runcmd:
   - ufw allow 22/tcp
   - ufw allow 26000/udp
@@ -22,7 +31,8 @@ runcmd:
   - systemctl start docker
 
   - git lfs install
-  - git clone https://github.com/mpdx/xonotic-server.git /root/xonotic-server
+  - git clone ${GIT_REPO_URL} /root/xonotic-server
   - cd /root/xonotic-server && git lfs pull
+  - cp /root/xonotic.env /root/xonotic-server/.env
 
   - cd /root/xonotic-server && docker-compose up -d

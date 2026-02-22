@@ -27,6 +27,11 @@ DNS_TTL="${DNS_TTL:-120}"
 # Generate server name
 SERVER_NAME="xonotic-$(date +%s)"
 
+# Generate cloud-init.yaml from template
+echo "Generating cloud-init configuration..."
+envsubst '${GIT_REPO_URL} ${SERVER_HOSTNAME} ${RCON_PASSWORD} ${MAX_PLAYERS} ${GAME_PORT} ${MAP_SERVER_URL}' \
+    < cloud-init.yaml.template > cloud-init.yaml
+
 echo "Creating Hetzner VPS..."
 hcloud server create \
     --name "$SERVER_NAME" \
@@ -46,7 +51,6 @@ echo "✓ Server created at $SERVER_IP"
 # Update Cloudflare DNS
 echo "Updating Cloudflare DNS..."
 
-# Get existing DNS record ID (if exists)
 RECORD_RESPONSE=$(curl -s -X GET \
     "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/dns_records?name=$DOMAIN" \
     -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
@@ -55,7 +59,6 @@ RECORD_RESPONSE=$(curl -s -X GET \
 RECORD_ID=$(echo "$RECORD_RESPONSE" | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4)
 
 if [ -n "$RECORD_ID" ]; then
-    # Update existing record
     curl -s -X PUT \
         "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/dns_records/$RECORD_ID" \
         -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
@@ -64,7 +67,6 @@ if [ -n "$RECORD_ID" ]; then
         > /dev/null
     echo "✓ DNS record updated"
 else
-    # Create new record
     curl -s -X POST \
         "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/dns_records" \
         -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
