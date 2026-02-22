@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euoa pipefail
 
-# Load environment variables
 if [ ! -f .env ]; then
     echo "Error: .env file not found. Copy .env.example and configure it."
     exit 1
@@ -9,7 +8,6 @@ fi
 
 source .env
 
-# Validate required variables
 required_vars=(HETZNER_SSH_KEY CLOUDFLARE_API_TOKEN CLOUDFLARE_ZONE_ID DOMAIN GIT_REPO_URL)
 for var in "${required_vars[@]}"; do
     if [ -z "${!var:-}" ]; then
@@ -24,15 +22,11 @@ HETZNER_LOCATION="${HETZNER_LOCATION:-nbg1}"
 HETZNER_IMAGE="${HETZNER_IMAGE:-debian-12}"
 DNS_TTL="${DNS_TTL:-120}"
 
-# Generate server name
 SERVER_NAME="xonotic-$(date +%s)"
 
-# Generate cloud-init.yaml from template
 echo "Generating cloud-init configuration..."
 envsubst '${GIT_REPO_URL} ${SERVER_HOSTNAME} ${RCON_PASSWORD} ${MAX_PLAYERS} ${GAME_PORT} ${MAP_SERVER_URL}' \
     < cloud-init.yaml.template > cloud-init.yaml
-
-exit
 
 echo "Creating Hetzner VPS..."
 hcloud server create \
@@ -46,13 +40,10 @@ hcloud server create \
 echo "Waiting for server to start..."
 sleep 5
 
-# Get server IP
 SERVER_IP=$(hcloud server ip "$SERVER_NAME")
 echo "✓ Server created at $SERVER_IP"
 
-# Update Cloudflare DNS
 echo "Updating Cloudflare DNS..."
-
 RECORD_RESPONSE=$(curl -s -X GET \
     "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/dns_records?name=$DOMAIN" \
     -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
