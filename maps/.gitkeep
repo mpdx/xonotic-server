@@ -1,0 +1,13 @@
+# Custom Maps Directory
+
+Place your .pk3 map files here.
+
+Example:
+- custom_map_1.pk3
+- custom_map_2.pk3
+- awesome_arena.pk3
+
+These maps will be:
+1. Served via HTTP by the nginx container at http://domain:8080/maps/
+2. Mounted into the Xonotic server container at /opt/xonotic/data/
+3. Auto-downloaded by clients via sv_curl_defaulturl

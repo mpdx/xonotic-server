@@ -1,0 +1,24 @@
+package_update: true
+package_upgrade: true
+
+packages:
+  - docker.io
+  - docker-compose
+  - git
+  - curl
+  - ufw
+
+runcmd:
+  - ufw allow 22/tcp
+  - ufw allow 26000/udp
+  - ufw allow 8080/tcp
+  - ufw --force enable
+
+  - systemctl enable docker
+  - systemctl start docker
+
+  - git clone https://github.com/yourusername/xonotic-server.git /root/xonotic-server
+  - cd /root/xonotic-server
+
+  - docker-compose up -d
+  - docker-compose ps
