@@ -4,6 +4,7 @@ package_update: true
 package_upgrade: true
 
 packages:
+  - apparmor
   - docker.io
   - docker-compose
   - git

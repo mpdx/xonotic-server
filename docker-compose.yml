@@ -6,7 +6,8 @@ services:
     ports:
       - "26000:26000/udp"
     volumes:
-      - ./maps:/opt/xonotic/data:ro
+      - xonotic-data:/opt/xonotic/data
+      - ./maps:/opt/xonotic/data/data:ro
     environment:
       - SERVER_HOSTNAME=${SERVER_HOSTNAME:-My Xonotic Server}
       - RCON_PASSWORD=${RCON_PASSWORD:-changeme}
@@ -23,3 +24,6 @@ services:
     volumes:
       - ./maps:/usr/share/nginx/html/maps:ro
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  xonotic-data:
