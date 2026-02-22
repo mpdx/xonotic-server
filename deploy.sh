@@ -19,7 +19,7 @@ for var in "${required_vars[@]}"; do
 done
 
 # Default values
-HETZNER_SERVER_TYPE="${HETZNER_SERVER_TYPE:-cx11}"
+HETZNER_SERVER_TYPE="${HETZNER_SERVER_TYPE:-cx23}"
 HETZNER_LOCATION="${HETZNER_LOCATION:-nbg1}"
 HETZNER_IMAGE="${HETZNER_IMAGE:-debian-12}"
 DNS_TTL="${DNS_TTL:-120}"
@@ -85,7 +85,7 @@ echo "Map Server:   http://$DOMAIN:8080/maps/"
 echo "SSH Access:   ssh root@$SERVER_IP"
 echo ""
 echo "Cloud-init is provisioning the server..."
-echo "   This takes up to 3 minutes. Check status with:"
+echo "   This takes up couple of minutes to complete. Check status with:"
 echo "   ssh root@$SERVER_IP 'tail -f /var/log/cloud-init-output.log'"
 echo ""
 echo "To destroy: hcloud server delete $SERVER_NAME"
