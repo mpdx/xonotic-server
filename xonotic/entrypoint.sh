@@ -1,11 +1,15 @@
 #!/bin/bash
 set -e
 
+if [ -d "/custom-maps" ]; then
+    cp /custom-maps/*.pk3 /opt/xonotic/data/ 2>/dev/null || true
+fi
+
 envsubst < /opt/xonotic/server.cfg.template > /opt/xonotic/data/server.cfg.tmp
 
 CUSTOM_MAPS=""
-if [ -d "/opt/xonotic/data/data" ] && [ "$(ls -A /opt/xonotic/data/data/*.pk3 2>/dev/null)" ]; then
-    for map_file in /opt/xonotic/data/data/*.pk3; do
+if [ -d "/custom-maps" ] && [ "$(ls -A /custom-maps/*.pk3 2>/dev/null)" ]; then
+    for map_file in /custom-maps/*.pk3; do
         if [ -f "$map_file" ]; then
             map_name=$(basename "$map_file" .pk3)
             CUSTOM_MAPS="$CUSTOM_MAPS $map_name"
