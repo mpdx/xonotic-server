@@ -1,2 +1,12 @@
 the_yard.pk3 filter=lfs diff=lfs merge=lfs -text
 xonotic-maps-extra.pk3 filter=lfs diff=lfs merge=lfs -text
+map-aepyra_quake3_eac2.pk3 filter=lfs diff=lfs merge=lfs -text
+moddm17.pk3 filter=lfs diff=lfs merge=lfs -text
+oilrig.pk3 filter=lfs diff=lfs merge=lfs -text
+roof-kappa.pk3 filter=lfs diff=lfs merge=lfs -text
+17++.pk3 filter=lfs diff=lfs merge=lfs -text
+deimos2.pk3 filter=lfs diff=lfs merge=lfs -text
+dmmdm6_q3.pk3 filter=lfs diff=lfs merge=lfs -text
+evilminsta.pk3 filter=lfs diff=lfs merge=lfs -text
+hub3aeroq3a_nex_r5_fix4.pk3 filter=lfs diff=lfs merge=lfs -text
+map_aedm17.pk3 filter=lfs diff=lfs merge=lfs -text
