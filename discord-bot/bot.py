@@ -72,13 +72,12 @@ async def ready(req: ReadyRequest):
                     json={
                         "embeds": [
                             {
-                                "title": "Xonotic Server Ready!",
-                                "description": "Server is now accepting connections",
+                                "title": "Serwer gotowy!",
                                 "color": 0x00FF00,
                                 "fields": [
                                     {
-                                        "name": "Connect",
-                                        "value": f"`{DOMAIN}:26000`",
+                                        "name": "w konsoli:",
+                                        "value": f"`/connect {DOMAIN}`",
                                         "inline": False,
                                     }
                                 ],
@@ -111,7 +110,7 @@ bot = XonoticBot()
 
 
 @bot.tree.command(name="xonotic-create", description="Create a Xonotic server")
-@app_commands.describe(hours="Auto-destroy after N hours (default: 5, max: 5)")
+@app_commands.describe(hours="Automatyczne usunięcie po N godzinach (domyślnie: 5, maks: 5)")
 @app_commands.checks.cooldown(1, 600)  # 10 min global cooldown
 async def create_server(interaction: discord.Interaction, hours: int = 5):
     await interaction.response.defer()
@@ -136,7 +135,7 @@ async def create_server(interaction: discord.Interaction, hours: int = 5):
 
     if result.returncode != 0:
         await interaction.followup.send(
-            f"Deploy failed:\n```{result.stderr[:1000]}```"
+            f"Deploy się obsrał:\n```{result.stderr[:1000]}```"
         )
         return
 
@@ -159,13 +158,13 @@ async def create_server(interaction: discord.Interaction, hours: int = 5):
     save_state(state)
 
     embed = discord.Embed(
-        title="Xonotic Server Starting...", color=discord.Color.yellow()
+        title="Serwer startuje. ETA ~ 5 min.", color=discord.Color.yellow()
     )
-    embed.add_field(name="Connect", value=f"`{DOMAIN}:26000`", inline=False)
+    embed.add_field(name="domena:port", value=f"`{DOMAIN}:26000`", inline=False)
     embed.add_field(name="IP", value=ip, inline=True)
-    embed.add_field(name="Server Name", value=server_name, inline=True)
+    embed.add_field(name="Hetzner name", value=server_name, inline=True)
     embed.set_footer(
-        text=f"Auto-destroy in {hours}h. You'll be notified when server is ready."
+        text=f"Automatyczny shutdown ustawiony na {hours}h. Przyjdzie info na discorda, gdy serwer będzie gotowy."
     )
 
     await interaction.followup.send(embed=embed)
@@ -178,7 +177,7 @@ async def destroy_server(interaction: discord.Interaction):
 
     state = load_state()
     if not state:
-        await interaction.followup.send("No server is running.")
+        await interaction.followup.send("Nie ma uruchomionego serwera.")
         return
 
     result = subprocess.run(
@@ -196,8 +195,8 @@ async def destroy_server(interaction: discord.Interaction):
     clear_state()
 
     embed = discord.Embed(
-        title="Server Destroyed",
-        description=f"Server `{state['server_name']}` has been destroyed.",
+        title="Serwer dostał wpierdol. Bynajmniej nie od Rafała. ",
+        description=f"Serwer `{state['server_name']}` wyłączony i usunięty z Hetznera.",
         color=discord.Color.red(),
     )
     await interaction.followup.send(embed=embed)
@@ -256,14 +255,14 @@ async def server_status(interaction: discord.Interaction):
     state = load_state()
 
     if not state:
-        embed = discord.Embed(title="No Server Running", color=discord.Color.greyple())
+        embed = discord.Embed(title="Serwer nie jest uruchomiony", color=discord.Color.greyple())
         await interaction.followup.send(embed=embed)
         return
 
-    status = "Ready" if state.get("ready") else "Starting..."
+    status = "Gotowy" if state.get("ready") else "Startuje..."
     color = discord.Color.green() if state.get("ready") else discord.Color.yellow()
-    embed = discord.Embed(title=f"Server {status}", color=color)
-    embed.add_field(name="Connect", value=f"`{DOMAIN}:26000`", inline=False)
+    embed = discord.Embed(title=f"Serwer {status}", color=color)
+    embed.add_field(name="w konsoli:", value=f"`/connect {DOMAIN}`", inline=False)
     embed.add_field(name="IP", value=state["ip"], inline=True)
     embed.add_field(name="Auto-destroy", value=f"<t:{state['destroy_at']}:R>", inline=True)
 
@@ -286,7 +285,7 @@ async def server_status(interaction: discord.Interaction):
 async def on_cooldown_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.CommandOnCooldown):
         await interaction.response.send_message(
-            f"Please wait {int(error.retry_after)}s before using this command again.",
+            f"Poczekaj {int(error.retry_after)}s przed ponownym użyciem komendy. Bierz przykład z Rafała.",
             ephemeral=True,
         )
     else:
